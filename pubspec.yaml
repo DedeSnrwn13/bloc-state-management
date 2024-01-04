@@ -8,9 +8,12 @@ environment:
 
 dependencies:
   bloc: ^8.1.2
+  dio: ^5.4.0
   equatable: ^2.0.5
   flutter:
     sdk: flutter
+  meta: ^1.9.1
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_lints: ^2.0.0
