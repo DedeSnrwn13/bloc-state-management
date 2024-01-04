@@ -23,7 +23,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     emit(LoginLoading());
 
-    if (username == 'username' && password == 'password') {
+    if (username == 'nova0893' && password == 'nova0893') {
       emit(const LoginSuccess(sessionToken: '123456789'));
     } else {
       emit(const LoginFailure(error: 'Login Failed'));
