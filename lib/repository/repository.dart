@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Repository {
   Future<bool> checkSession(String sessionToken) async {
-    final Dio _dio = Dio();
+    final Dio dio = Dio();
 
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -17,7 +17,7 @@ class Repository {
 
       fData.fields.addAll(fDataMap.entries.map((e) => MapEntry(e.key, e.value)));
 
-      final response = await _dio.post('https://client-server-nova.000webhostapp.com/session.php', data: fData);
+      final response = await dio.post('https://client-server-nova.000webhostapp.com/session.php', data: fData);
 
       log("Check session: $response");
 
@@ -27,36 +27,41 @@ class Repository {
         return data['status'] == 'success';
       }
     } catch (e) {
-      // Handle error if needed
+      log(e.toString());
     }
 
     return false;
   }
 
   Future logout() async {
-    final Dio _dio = Dio();
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String sessionToken = prefs.getString('session') ?? "";
+    final Dio dio = Dio();
 
-    Map fDataMap = {'session_token': sessionToken};
-    FormData fData = FormData();
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String sessionToken = prefs.getString('session') ?? "";
 
-    fData.fields.addAll(fDataMap.entries.map((e) => MapEntry(e.key, e.value)));
+      Map fDataMap = {'session_token': sessionToken};
+      FormData fData = FormData();
 
-    final response = await _dio.post('https://client-server-nova.000webhostapp.com/logout.php', data: fData);
+      fData.fields.addAll(fDataMap.entries.map((e) => MapEntry(e.key, e.value)));
 
-    prefs.remove('session_token');
+      final response = await dio.post('https://client-server-nova.000webhostapp.com/logout.php', data: fData);
+
+      prefs.remove('session_token');
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   Future login({required String username, required String password}) async {
-    final Dio _dio = Dio();
+    final Dio dio = Dio();
 
     Map fDataMap = {'user': username, 'pwd': password};
     FormData fData = FormData();
 
     fData.fields.addAll(fDataMap.entries.map((e) => MapEntry(e.key, e.value)));
 
-    final response = await _dio.post('https://client-server-nova.000webhostapp.com/login.php', data: fData);
+    final response = await dio.post('https://client-server-nova.000webhostapp.com/login.php', data: fData);
 
     log("Response: $response");
 
