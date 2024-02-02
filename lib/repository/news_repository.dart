@@ -109,4 +109,41 @@ class NewsRepository {
       throw e.toString();
     }
   }
+
+  Future<bool> editNews({
+    required String id,
+    required String title,
+    required String content,
+    required String date,
+    File? image,
+  }) async {
+    try {
+      Map<String, dynamic> formDataMap = {
+        'idnews': id,
+        'judul': title,
+        'deskripsi': content,
+        'tanggal': date,
+      };
+
+      if (image != null) {
+        formDataMap['url_image'] = await MultipartFile.fromFile(image.path, filename: 'image.jpg');
+      }
+
+      FormData formData = FormData.fromMap(formDataMap);
+      Response response = await dio.post(
+        'https://client-server-nova.000webhostapp.com/editnews.php',
+        data: formData,
+      );
+
+      log("RES ${response.data}");
+
+      if (response.statusCode == 200 && response.data['status'] == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
+    }
+  }
 }

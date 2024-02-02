@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latihan_state_management_bloc/bloc/detail_bloc.dart';
+import 'package:latihan_state_management_bloc/layout/editnews.dart';
 
 class DetailViewLoad extends StatefulWidget {
   final String id, title, url, desc, date;
@@ -28,13 +29,32 @@ class _DetailViewLoadState extends State<DetailViewLoad> {
         actions: [
           IconButton(
             onPressed: () {
-              showOptionsDialog(context).then((res) {
-                log('RES $res');
+              showOptionsDialog(context).then(
+                (res) {
+                  log('RES $res');
 
-                if (res == 'delete') {
-                  context.read<DetailBloc>().add(DeleteNews(id: widget.id, title: widget.title));
-                } else if (res == 'edit') {}
-              });
+                  if (res == 'delete') {
+                    context.read<DetailBloc>().add(DeleteNews(id: widget.id, title: widget.title));
+                  } else if (res == 'edit') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditNews(
+                          id: widget.id,
+                          title: widget.title,
+                          url: widget.url,
+                          desc: widget.desc,
+                          date: widget.date,
+                        ),
+                      ),
+                    ).then((value) {
+                      if (value == 'reload') {
+                        context.read<DetailBloc>().add(LoadNewsEvent(newsId: widget.id));
+                      }
+                    });
+                  }
+                },
+              );
             },
             icon: const Icon(Icons.more_vert),
           )
