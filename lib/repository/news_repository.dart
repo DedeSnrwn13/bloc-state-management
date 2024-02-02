@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 
@@ -31,6 +31,82 @@ class NewsRepository {
       }
     } catch (e) {
       throw Exception('Error: $e');
+    }
+  }
+
+  Future getNewsList(keyword) async {
+    try {
+      log("GETTING NEWS");
+
+      var response = await dio.get(
+        'https://client-server-nova.000webhostapp.com/listnews.php',
+        queryParameters: {'key': keyword},
+      );
+
+      log("list $response");
+
+      if (response.statusCode == 200) {
+        List newsList = response.data;
+        return newsList;
+      } else {
+        // Handle error cases if needed
+        log('Error: ${response.statusCode}');
+
+        return [];
+      }
+    } catch (e) {
+      log('Dio Error: $e');
+
+      return [];
+    }
+  }
+
+  Future selectNews(String id) async {
+    FormData formData = FormData.fromMap({
+      'idnews': id,
+    });
+
+    final response = await dio.post(
+      'https://client-server-nova.000webhostapp.com/selectdata.php',
+      data: formData,
+    );
+
+    Map<String, dynamic> responseData = Map<String, dynamic>.from(response.data);
+
+    log('Res $responseData');
+
+    if (responseData['success'] == true) {
+      responseData['data']['status'] == true;
+
+      return responseData['data'];
+    } else {
+      return {
+        'status': false,
+        'msg': responseData['msg'],
+      };
+    }
+  }
+
+  Future deleteNews(String id) async {
+    try {
+      FormData formData = FormData.fromMap({
+        'idnews': id,
+      });
+
+      final response = await dio.post(
+        'https://client-server-nova.000webhostapp.com/deletebews.php',
+        data: formData,
+      );
+
+      Map responseData = response.data;
+
+      if (responseData['status'] == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 }

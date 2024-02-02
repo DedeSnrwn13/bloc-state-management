@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latihan_state_management_bloc/bloc/login_bloc.dart';
 import 'package:latihan_state_management_bloc/layout/addnewsform.dart';
+import 'package:latihan_state_management_bloc/layout/managenews.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final String sessionToken;
@@ -36,7 +37,16 @@ class WelcomeScreen extends StatelessWidget {
                 );
               },
               child: const Text('Tambah Berita'),
-            )
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ManageNews()),
+                );
+              },
+              child: const Text('Kelola Berita'),
+            ),
           ],
         ),
       ),
